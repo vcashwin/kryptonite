@@ -35,13 +35,13 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div className="relative flex min-h-full flex-col items-center overflow-hidden font-heading gap-8">
+        <div className="relative flex min-h-full flex-col items-center overflow-hidden font-heading gap-8 px-8">
           <div className="absolute inset-0 bg-[url(../assets/images/grid.svg)] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
           <div className="pt-8 text-5xl">Kryptonite</div>
           <div className="text-xl tracking-widest font-sans">
             An encrypted password manager
           </div>
-          {user ? <div>Logged in</div> : <LoginButton onClick={handleSignIn} />}
+          {user ? List() : <LoginButton onClick={handleSignIn} />}
         </div>
       </main>
     </>
@@ -56,5 +56,205 @@ function LoginButton({ onClick }) {
     >
       Sign-in with Google
     </button>
+  );
+}
+
+const people = [
+  {
+    name: "Leslie Alexander",
+    email: "leslie.alexander@example.com",
+    role: "Co-Founder / CEO",
+    imageUrl:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    lastSeen: "3h ago",
+    lastSeenDateTime: "2023-01-23T13:23Z",
+  },
+  {
+    name: "Michael Foster",
+    email: "michael.foster@example.com",
+    role: "Co-Founder / CTO",
+    imageUrl:
+      "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    lastSeen: "3h ago",
+    lastSeenDateTime: "2023-01-23T13:23Z",
+  },
+  {
+    name: "Dries Vincent",
+    email: "dries.vincent@example.com",
+    role: "Business Relations",
+    imageUrl:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    lastSeen: null,
+  },
+  {
+    name: "Lindsay Walton",
+    email: "lindsay.walton@example.com",
+    role: "Front-end Developer",
+    imageUrl:
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    lastSeen: "3h ago",
+    lastSeenDateTime: "2023-01-23T13:23Z",
+  },
+  {
+    name: "Courtney Henry",
+    email: "courtney.henry@example.com",
+    role: "Designer",
+    imageUrl:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    lastSeen: "3h ago",
+    lastSeenDateTime: "2023-01-23T13:23Z",
+  },
+  {
+    name: "Tom Cook",
+    email: "tom.cook@example.com",
+    role: "Director of Product",
+    imageUrl:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    lastSeen: null,
+  },
+];
+
+export function List() {
+  return (
+    <ul role="list" className="max-w-4xl w-full divide-y divide-gray-100">
+      {people.map((person) => (
+        <li key={person.email} className="flex justify-between gap-x-6 py-5">
+          <div className="flex gap-4 items-center">
+            <img
+              className="h-12 w-12 flex-none rounded-full bg-gray-50"
+              src={person.imageUrl}
+              alt=""
+            />
+            <p className="text-md font-semibold leading-6 text-gray-900">
+              {person.name}
+            </p>
+          </div>
+          <div className="hidden sm:flex sm:flex-col sm:items-end">
+            <ClipboardCopy copyText={person.email} />
+            <ClipboardCopy copyText={person.name} isPassword={true} />
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function ClipboardCopy({ copyText, isPassword = false }) {
+  const [isCopied, setIsCopied] = React.useState(false);
+
+  // This is the function we wrote earlier
+  async function copyTextToClipboard(text) {
+    if ("clipboard" in navigator) {
+      return await navigator.clipboard.writeText(text);
+    } else {
+      return document.execCommand("copy", true, text);
+    }
+  }
+
+  // onClick handler function for the copy button
+  const handleCopyClick = () => {
+    // Asynchronously call copyTextToClipboard
+    copyTextToClipboard(copyText)
+      .then(() => {
+        // If successful, update the isCopied state value
+        setIsCopied(true);
+        setTimeout(() => {
+          setIsCopied(false);
+        }, 1500);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  return (
+    <div className="flex gap-4 items-center">
+      <p
+        className={`text-md font-semibold leading-6 text-gray-900 ${
+          isPassword && "text-sm"
+        }`}
+      >
+        {copyText}
+      </p>
+      <button className="group h-9 w-9 relative" onClick={handleCopyClick}>
+        <span
+          className="absolute inset-x-0 bottom-full mb-2.5 hidden justify-center scale-100 translate-y-0 opacity-100"
+          style={{ display: isCopied ? "flex" : "none" }}
+        >
+          <span className="text-heading rounded-md bg-gray-900 px-3 py-1 text-[0.625rem] font-semibold uppercase leading-4 tracking-wide text-white drop-shadow-md filter">
+            <svg
+              aria-hidden="true"
+              width="16"
+              height="6"
+              viewBox="0 0 16 6"
+              className="absolute left-1/2 top-full -ml-2 -mt-px text-gray-900"
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M15 0H1V1.00366V1.00366V1.00371H1.01672C2.72058 1.0147 4.24225 2.74704 5.42685 4.72928C6.42941 6.40691 9.57154 6.4069 10.5741 4.72926C11.7587 2.74703 13.2803 1.0147 14.9841 1.00371H15V0Z"
+                fill="currentColor"
+              ></path>
+            </svg>
+            Copied!
+          </span>
+        </span>
+        <svg
+          className="h-8 w-8 stroke-slate-400 transition group-hover:rotate-[-4deg] group-hover:stroke-slate-600"
+          fill="none"
+          viewBox="0 0 32 32"
+          xmlns="http://www.w3.org/2000/svg"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ stroke: isCopied ? "#06b6d4" : "#94a3b8" }}
+        >
+          <path
+            d="M12.9975 10.7499L11.7475 10.7499C10.6429 10.7499 9.74747 11.6453 9.74747 12.7499L9.74747 21.2499C9.74747 22.3544 10.6429 23.2499 11.7475 23.2499L20.2475 23.2499C21.352 23.2499 22.2475 22.3544 22.2475 21.2499L22.2475 12.7499C22.2475 11.6453 21.352 10.7499 20.2475 10.7499L18.9975 10.7499"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          ></path>
+          <path
+            d="M17.9975 12.2499L13.9975 12.2499C13.4452 12.2499 12.9975 11.8022 12.9975 11.2499L12.9975 9.74988C12.9975 9.19759 13.4452 8.74988 13.9975 8.74988L17.9975 8.74988C18.5498 8.74988 18.9975 9.19759 18.9975 9.74988L18.9975 11.2499C18.9975 11.8022 18.5498 12.2499 17.9975 12.2499Z"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          ></path>
+          <path
+            d="M13.7475 16.2499L18.2475 16.2499"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          ></path>
+          <path
+            d="M13.7475 19.2499L18.2475 19.2499"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          ></path>
+          <g className="opacity-0">
+            <path
+              d="M15.9975 5.99988L15.9975 3.99988"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            ></path>
+            <path
+              d="M19.9975 5.99988L20.9975 4.99988"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            ></path>
+            <path
+              d="M11.9975 5.99988L10.9975 4.99988"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            ></path>
+          </g>
+        </svg>
+      </button>
+    </div>
   );
 }
