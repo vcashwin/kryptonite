@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { auth, provider } from "./firebase";
+import { auth, provider } from "../../firebase";
 import { signInWithPopup } from "firebase/auth";
 import * as React from "react";
 
